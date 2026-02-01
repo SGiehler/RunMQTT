@@ -20,7 +20,7 @@
     "desktop"
   ],
   "author": "",
-  "license": "MIT",
+  "license": "CC-BY-NC-SA-4.0",
   "build": {
     "appId": "com.runmqtt.app",
     "productName": "RunMQTT",

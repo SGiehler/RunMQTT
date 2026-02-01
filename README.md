@@ -2,7 +2,7 @@
 
 A Windows desktop application for MQTT-based command execution and automation.
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![License](https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)
 ![Electron](https://img.shields.io/badge/electron-28.x-blue.svg)
 
@@ -114,4 +114,4 @@ Settings are stored in your user data directory:
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) file for details.
+This project is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](LICENSE) (CC BY-NC-SA 4.0).
