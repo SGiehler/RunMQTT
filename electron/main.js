@@ -131,6 +131,20 @@ function showNotification(title, body) {
     }
 }
 
+// Helper function to update MQTT subscriptions from all bindings
+function updateAllSubscriptions() {
+    const commandBindings = configManager.getBindings();
+    const notificationBindings = configManager.getNotificationBindings();
+
+    // Combine all topics from both binding types
+    const allBindings = [
+        ...commandBindings.map(b => ({ topic: b.topic })),
+        ...notificationBindings.map(b => ({ topic: b.topic }))
+    ];
+
+    mqttClient.updateSubscriptions(allBindings);
+}
+
 function setupIPC() {
     // Connection management
     ipcMain.handle('mqtt:connect', async (event, config) => {
@@ -168,7 +182,7 @@ function setupIPC() {
 
     ipcMain.handle('bindings:save', (event, bindings) => {
         configManager.saveBindings(bindings);
-        mqttClient.updateSubscriptions(bindings);
+        updateAllSubscriptions();
         return { success: true };
     });
 
@@ -179,6 +193,7 @@ function setupIPC() {
 
     ipcMain.handle('notifications:save', (event, bindings) => {
         configManager.saveNotificationBindings(bindings);
+        updateAllSubscriptions();
         return { success: true };
     });
 
@@ -359,6 +374,7 @@ app.whenReady().then(() => {
 
     mqttClient.on('connected', () => {
         updateTrayMenu(true);
+        updateAllSubscriptions();
         if (mainWindow && !mainWindow.isDestroyed()) {
             mainWindow.webContents.send('mqtt:status', { connected: true });
         }
