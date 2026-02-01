@@ -64,6 +64,7 @@ const elements = {
     settingAutoConnect: document.getElementById('settingAutoConnect'),
     settingMinimizeToTray: document.getElementById('settingMinimizeToTray'),
     settingStartMinimized: document.getElementById('settingStartMinimized'),
+    settingAutoLaunch: document.getElementById('settingAutoLaunch'),
     btnSaveSettings: document.getElementById('btnSaveSettings')
 };
 
@@ -622,7 +623,8 @@ function setupSettingsHandlers() {
         const settings = {
             autoConnect: elements.settingAutoConnect.checked,
             minimizeToTray: elements.settingMinimizeToTray.checked,
-            startMinimized: elements.settingStartMinimized.checked
+            startMinimized: elements.settingStartMinimized.checked,
+            autoLaunch: elements.settingAutoLaunch.checked
         };
 
         await window.api.config.saveSettings(settings);
@@ -699,6 +701,7 @@ async function loadInitialData() {
         elements.settingAutoConnect.checked = settings.autoConnect || false;
         elements.settingMinimizeToTray.checked = settings.minimizeToTray !== false;
         elements.settingStartMinimized.checked = settings.startMinimized || false;
+        elements.settingAutoLaunch.checked = settings.autoLaunch || false;
     }
 
     // Check current connection status

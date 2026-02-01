@@ -16,7 +16,8 @@ class ConfigManager {
                 settings: {
                     autoConnect: false,
                     minimizeToTray: true,
-                    startMinimized: false
+                    startMinimized: false,
+                    autoLaunch: false
                 }
             }
         });

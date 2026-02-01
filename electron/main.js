@@ -208,6 +208,14 @@ function setupIPC() {
 
     ipcMain.handle('config:saveSettings', (event, settings) => {
         configManager.saveSettings(settings);
+
+        // Apply auto-launch setting
+        app.setLoginItemSettings({
+            openAtLogin: settings.autoLaunch || false,
+            path: app.getPath('exe'),
+            args: []
+        });
+
         return { success: true };
     });
 

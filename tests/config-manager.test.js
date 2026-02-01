@@ -104,7 +104,8 @@ describe('ConfigManager', () => {
             expect(settings).toEqual({
                 autoConnect: false,
                 minimizeToTray: true,
-                startMinimized: false
+                startMinimized: false,
+                autoLaunch: false
             });
         });
 
