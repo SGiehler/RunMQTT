@@ -70,6 +70,10 @@ body {
   margin-bottom: 20px;
 }
 
+.app-icon {
+  height: 28px;
+}
+
 .logo-icon {
   font-size: 28px;
 }
