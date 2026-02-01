@@ -35,6 +35,12 @@
     "win": {
       "target": [
         {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
           "target": "portable",
           "arch": [
             "x64"
@@ -43,6 +49,12 @@
       ],
       "icon": "assets/icon.png",
       "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "RunMQTT-Setup.exe",
+      "shortcutName": "RunMQTT"
     },
     "portable": {
       "artifactName": "RunMQTT-Portable.exe"
