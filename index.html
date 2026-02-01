@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; connect-src 'self'">
+  <title>RunMQTT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/index.css">
+</head>
+
+<body>
+  <div id="app">
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-icon">📡</div>
+        <span>RunMQTT</span>
+      </div>
+      <nav class="nav-menu">
+        <button class="nav-item active" data-view="connection">
+          <span class="nav-icon">🔌</span>
+          <span>Connection</span>
+        </button>
+        <button class="nav-item" data-view="bindings">
+          <span class="nav-icon">⚡</span>
+          <span>Command Bindings</span>
+        </button>
+        <button class="nav-item" data-view="notifications">
+          <span class="nav-icon">🔔</span>
+          <span>Notifications</span>
+        </button>
+        <button class="nav-item" data-view="log">
+          <span class="nav-icon">📋</span>
+          <span>Activity Log</span>
+        </button>
+        <button class="nav-item" data-view="settings">
+          <span class="nav-icon">⚙️</span>
+          <span>Settings</span>
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="connection-indicator" id="connectionIndicator">
+          <span class="status-dot disconnected"></span>
+          <span class="status-text">Disconnected</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <!-- Connection View -->
+      <section id="view-connection" class="view active">
+        <div class="view-header">
+          <h1>Connection Settings</h1>
+        </div>
+        <div class="view-body">
+          <div class="card">
+            <div class="card-header">
+              <h2>MQTT Broker</h2>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <label for="brokerUrl">Broker URL</label>
+                <input type="text" id="brokerUrl" placeholder="mqtt://192.168.1.100:1883" />
+                <span class="form-hint">e.g., mqtt://localhost:1883 or mqtts://broker.example.com:8883</span>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="username">Username (optional)</label>
+                  <input type="text" id="username" placeholder="Username" />
+                </div>
+                <div class="form-group">
+                  <label for="password">Password (optional)</label>
+                  <input type="password" id="password" placeholder="Password" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="clientId">Client ID (optional)</label>
+                <input type="text" id="clientId" placeholder="Auto-generated if empty" />
+              </div>
+              <div class="button-group">
+                <button id="btnConnect" class="btn btn-primary">
+                  <span class="btn-icon">🔗</span>
+                  Connect
+                </button>
+                <button id="btnDisconnect" class="btn btn-secondary" disabled>
+                  <span class="btn-icon">🔌</span>
+                  Disconnect
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bindings View -->
+      <section id="view-bindings" class="view">
+        <div class="view-header">
+          <h1>Command Bindings</h1>
+          <button id="btnAddBinding" class="btn btn-primary">
+            <span class="btn-icon">+</span>
+            Add Binding
+          </button>
+        </div>
+        <div class="view-body">
+          <div class="bindings-list" id="bindingsList">
+            <div class="empty-state" id="emptyBindings">
+              <div class="empty-icon">⚡</div>
+              <p>No command bindings yet</p>
+              <p class="empty-hint">Click "Add Binding" to create your first automation</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Notifications View -->
+      <section id="view-notifications" class="view">
+        <div class="view-header">
+          <h1>Notification Bindings</h1>
+          <button id="btnAddNotification" class="btn btn-primary">
+            <span class="btn-icon">+</span>
+            Add Notification
+          </button>
+        </div>
+        <div class="view-body">
+          <div class="bindings-list" id="notificationsList">
+            <div class="empty-state" id="emptyNotifications">
+              <div class="empty-icon">🔔</div>
+              <p>No notification bindings yet</p>
+              <p class="empty-hint">Create bindings to show Windows notifications from MQTT messages</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Log View -->
+      <section id="view-log" class="view">
+        <div class="view-header">
+          <h1>Activity Log</h1>
+          <button id="btnClearLog" class="btn btn-secondary">
+            <span class="btn-icon">🗑️</span>
+            Clear Log
+          </button>
+        </div>
+        <div class="view-body">
+          <div class="log-container" id="logContainer">
+            <div class="empty-state" id="emptyLog">
+              <div class="empty-icon">📋</div>
+              <p>No activity yet</p>
+              <p class="empty-hint">Messages and command executions will appear here</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Settings View -->
+      <section id="view-settings" class="view">
+        <div class="view-header">
+          <h1>Settings</h1>
+        </div>
+        <div class="view-body">
+          <div class="settings-grid">
+            <div class="card settings-card">
+              <div class="card-header">
+                <h2>🚀 Startup</h2>
+              </div>
+              <div class="card-body">
+                <div class="setting-item">
+                  <div class="setting-info">
+                    <div class="setting-title">Auto-connect on startup</div>
+                    <div class="setting-desc">Automatically connect to the last broker when app starts</div>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="settingAutoConnect" />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+                <div class="setting-item">
+                  <div class="setting-info">
+                    <div class="setting-title">Start minimized</div>
+                    <div class="setting-desc">Start the app minimized to system tray</div>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="settingStartMinimized" />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="card settings-card">
+              <div class="card-header">
+                <h2>🖥️ Behavior</h2>
+              </div>
+              <div class="card-body">
+                <div class="setting-item">
+                  <div class="setting-info">
+                    <div class="setting-title">Minimize to system tray</div>
+                    <div class="setting-desc">Keep running in background when window is closed</div>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="settingMinimizeToTray" checked />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="card settings-card">
+              <div class="card-header">
+                <h2>💾 Configuration</h2>
+              </div>
+              <div class="card-body">
+                <p class="setting-info-text">Settings are saved automatically when changed.</p>
+                <div class="button-group">
+                  <button id="btnSaveSettings" class="btn btn-primary">
+                    <span class="btn-icon">💾</span>
+                    Save Settings
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Binding Editor Modal -->
+  <div class="modal" id="bindingModal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="bindingModalTitle">Add Command Binding</h2>
+        <button class="modal-close" id="closeBindingModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="bindingName">Binding Name</label>
+          <input type="text" id="bindingName" placeholder="e.g., Turn on lights" />
+        </div>
+        <div class="form-group">
+          <label for="bindingTopic">MQTT Topic</label>
+          <input type="text" id="bindingTopic" placeholder="e.g., home/lights/control" />
+          <span class="form-hint">Use + for single-level wildcard, # for multi-level</span>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="payloadMatch">Payload Match</label>
+            <select id="payloadMatch">
+              <option value="any">Any payload</option>
+              <option value="exact">Exact match</option>
+              <option value="contains">Contains</option>
+              <option value="regex">Regex</option>
+            </select>
+          </div>
+          <div class="form-group" id="payloadValueGroup" style="display: none;">
+            <label for="payloadValue">Match Value</label>
+            <input type="text" id="payloadValue" placeholder="Value to match" />
+          </div>
+        </div>
+
+        <div class="actions-section">
+          <div class="section-header">
+            <h3>Actions</h3>
+            <button type="button" id="btnAddAction" class="btn btn-small btn-secondary">+ Add Action</button>
+          </div>
+          <div id="actionsList" class="actions-list"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnCancelBinding" class="btn btn-secondary">Cancel</button>
+        <button id="btnSaveBinding" class="btn btn-primary">Save Binding</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Editor Modal -->
+  <div class="modal" id="notificationModal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="notificationModalTitle">Add Notification Binding</h2>
+        <button class="modal-close" id="closeNotificationModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="notifTopic">MQTT Topic</label>
+          <input type="text" id="notifTopic" placeholder="e.g., alerts/doorbell" />
+        </div>
+        <div class="form-group">
+          <label for="notifTitle">Notification Title</label>
+          <input type="text" id="notifTitle" placeholder="e.g., Doorbell Alert" />
+          <span class="form-hint">Placeholders: {payload}, {topic}, or JSONPath: {$.data.value}</span>
+        </div>
+        <div class="form-group">
+          <label for="notifBody">Notification Body</label>
+          <textarea id="notifBody" rows="3" placeholder="e.g., Someone is at the door - {$.message}"></textarea>
+          <span class="form-hint">Use {$.json.path} to extract values from JSON payloads</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnCancelNotification" class="btn btn-secondary">Cancel</button>
+        <button id="btnSaveNotification" class="btn btn-primary">Save Notification</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Editor Template (hidden) -->
+  <template id="actionTemplate">
+    <div class="action-item" data-action-index="">
+      <div class="action-header">
+        <select class="action-type">
+          <option value="run-program">Run Program</option>
+          <option value="shell-command">Shell Command</option>
+          <option value="batch-script">Batch Script</option>
+          <option value="volume">Set Volume</option>
+          <option value="keyboard">Send Keys</option>
+        </select>
+        <button type="button" class="btn-icon-only btn-remove-action" title="Remove action">🗑️</button>
+      </div>
+      <div class="action-config"></div>
+    </div>
+  </template>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
