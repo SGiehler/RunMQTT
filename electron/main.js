@@ -16,7 +16,7 @@ let commandExecutor;
 
 const isDev = !app.isPackaged;
 
-function createWindow() {
+function createWindow(startMinimized = false) {
     // Remove default menu bar
     Menu.setApplicationMenu(null);
 
@@ -35,13 +35,21 @@ function createWindow() {
         frame: true,
         titleBarStyle: 'default',
         backgroundColor: '#1a1a2e',
-        autoHideMenuBar: true
+        autoHideMenuBar: true,
+        show: !startMinimized  // Don't show window initially if starting minimized
     });
 
     if (isDev) {
         mainWindow.loadURL('http://localhost:5173');
     } else {
         mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
+    }
+
+    // Show window when ready to avoid visual flash, unless starting minimized
+    if (!startMinimized) {
+        mainWindow.once('ready-to-show', () => {
+            mainWindow.show();
+        });
     }
 
     mainWindow.on('close', (event) => {
@@ -403,13 +411,15 @@ app.whenReady().then(() => {
 
     mqttClient.on('message', handleMqttMessage);
 
-    createWindow();
+    // Load settings before creating window to check startMinimized
+    const settings = configManager.getSettings();
+
+    createWindow(settings.startMinimized);
     createTray();
     setupIPC();
 
     // Auto-connect if configured
     const config = configManager.getConnectionConfig();
-    const settings = configManager.getSettings();
     if (config.brokerUrl && settings.autoConnect) {
         mqttClient.connect(config);
     }

@@ -64,8 +64,7 @@ const elements = {
     settingAutoConnect: document.getElementById('settingAutoConnect'),
     settingMinimizeToTray: document.getElementById('settingMinimizeToTray'),
     settingStartMinimized: document.getElementById('settingStartMinimized'),
-    settingAutoLaunch: document.getElementById('settingAutoLaunch'),
-    btnSaveSettings: document.getElementById('btnSaveSettings')
+    settingAutoLaunch: document.getElementById('settingAutoLaunch')
 };
 
 // Initialize
@@ -619,7 +618,8 @@ function renderLog() {
 
 // Settings
 function setupSettingsHandlers() {
-    elements.btnSaveSettings.addEventListener('click', async () => {
+    // Auto-save function for settings
+    const autoSaveSettings = async () => {
         const settings = {
             autoConnect: elements.settingAutoConnect.checked,
             minimizeToTray: elements.settingMinimizeToTray.checked,
@@ -628,8 +628,13 @@ function setupSettingsHandlers() {
         };
 
         await window.api.config.saveSettings(settings);
-        alert('Settings saved!');
-    });
+    };
+
+    // Add change listeners to all settings checkboxes for auto-save
+    elements.settingAutoConnect.addEventListener('change', autoSaveSettings);
+    elements.settingMinimizeToTray.addEventListener('change', autoSaveSettings);
+    elements.settingStartMinimized.addEventListener('change', autoSaveSettings);
+    elements.settingAutoLaunch.addEventListener('change', autoSaveSettings);
 }
 
 // MQTT Events
