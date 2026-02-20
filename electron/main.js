@@ -4,6 +4,7 @@ const { JSONPath } = require('jsonpath-plus');
 const MqttClient = require('./mqtt-client');
 const CommandExecutor = require('./command-executor');
 const ConfigManager = require('./config-manager');
+const { autoUpdater } = require('electron-updater');
 
 // Set app name for notifications
 app.setName('RunMQTT');
@@ -205,6 +206,9 @@ function setupIPC() {
         return { success: true };
     });
 
+    // App info
+    ipcMain.handle('app:getVersion', () => app.getVersion());
+
     // Config
     ipcMain.handle('config:getConnection', () => {
         return configManager.getConnectionConfig();
@@ -234,6 +238,51 @@ function setupIPC() {
             return { success: true, result };
         } catch (error) {
             return { success: false, error: error.message };
+        }
+    });
+
+    // Updater
+    autoUpdater.autoDownload = false;
+
+    ipcMain.handle('updater:check', () => {
+        return autoUpdater.checkForUpdates().catch(err => ({ error: err.message }));
+    });
+
+    ipcMain.handle('updater:download', () => {
+        return autoUpdater.downloadUpdate().catch(err => ({ error: err.message }));
+    });
+
+    ipcMain.handle('updater:install', () => {
+        autoUpdater.quitAndInstall();
+    });
+
+    autoUpdater.on('update-available', (info) => {
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            mainWindow.webContents.send('updater:update-available', info);
+        }
+    });
+
+    autoUpdater.on('update-not-available', (info) => {
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            mainWindow.webContents.send('updater:update-not-available', info);
+        }
+    });
+
+    autoUpdater.on('error', (err) => {
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            mainWindow.webContents.send('updater:error', err.message);
+        }
+    });
+
+    autoUpdater.on('download-progress', (progressObj) => {
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            mainWindow.webContents.send('updater:download-progress', progressObj);
+        }
+    });
+
+    autoUpdater.on('update-downloaded', (info) => {
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            mainWindow.webContents.send('updater:update-downloaded', info);
         }
     });
 }
@@ -431,6 +480,9 @@ app.whenReady().then(() => {
     if (config.brokerUrl && settings.autoConnect) {
         mqttClient.connect(config);
     }
+
+    // Auto check for updates
+    autoUpdater.checkForUpdates().catch(err => console.error('Update check failed:', err));
 });
 
 app.on('window-all-closed', () => {

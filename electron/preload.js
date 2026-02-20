@@ -37,6 +37,11 @@ contextBridge.exposeInMainWorld('api', {
         }
     },
 
+    // App Info
+    app: {
+        getVersion: () => ipcRenderer.invoke('app:getVersion')
+    },
+
     // Configuration
     config: {
         getConnection: () => ipcRenderer.invoke('config:getConnection'),
@@ -47,5 +52,27 @@ contextBridge.exposeInMainWorld('api', {
     // Command Testing
     command: {
         test: (action) => ipcRenderer.invoke('command:test', action)
+    },
+
+    // Updater
+    updater: {
+        check: () => ipcRenderer.invoke('updater:check'),
+        download: () => ipcRenderer.invoke('updater:download'),
+        install: () => ipcRenderer.invoke('updater:install'),
+        onUpdateAvailable: (callback) => {
+            ipcRenderer.on('updater:update-available', (event, info) => callback(info));
+        },
+        onUpdateNotAvailable: (callback) => {
+            ipcRenderer.on('updater:update-not-available', (event, info) => callback(info));
+        },
+        onError: (callback) => {
+            ipcRenderer.on('updater:error', (event, error) => callback(error));
+        },
+        onDownloadProgress: (callback) => {
+            ipcRenderer.on('updater:download-progress', (event, progress) => callback(progress));
+        },
+        onUpdateDownloaded: (callback) => {
+            ipcRenderer.on('updater:update-downloaded', (event, info) => callback(info));
+        }
     }
 });

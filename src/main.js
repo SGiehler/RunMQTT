@@ -65,7 +65,17 @@ const elements = {
     settingAutoConnect: document.getElementById('settingAutoConnect'),
     settingMinimizeToTray: document.getElementById('settingMinimizeToTray'),
     settingStartMinimized: document.getElementById('settingStartMinimized'),
-    settingAutoLaunch: document.getElementById('settingAutoLaunch')
+    settingAutoLaunch: document.getElementById('settingAutoLaunch'),
+
+    // Updater
+    appVersionDesc: document.getElementById('appVersionDesc'),
+    btnCheckUpdate: document.getElementById('btnCheckUpdate'),
+    updateActionContainer: document.getElementById('updateActionContainer'),
+    btnDownloadUpdate: document.getElementById('btnDownloadUpdate'),
+    btnInstallUpdate: document.getElementById('btnInstallUpdate'),
+    updateProgressContainer: document.getElementById('updateProgressContainer'),
+    updateProgressBar: document.getElementById('updateProgressBar'),
+    updateProgressText: document.getElementById('updateProgressText')
 };
 
 // Initialize
@@ -76,6 +86,7 @@ async function init() {
     setupNotificationHandlers();
     setupLogHandlers();
     setupSettingsHandlers();
+    setupUpdaterHandlers();
     setupMqttEvents();
 
     await loadInitialData();
@@ -641,6 +652,74 @@ function setupSettingsHandlers() {
     elements.settingAutoLaunch.addEventListener('change', autoSaveSettings);
 }
 
+// Updater
+function setupUpdaterHandlers() {
+    elements.btnCheckUpdate.addEventListener('click', async () => {
+        elements.appVersionDesc.textContent = 'Checking for updates...';
+        elements.btnCheckUpdate.disabled = true;
+        await window.api.updater.check();
+    });
+
+    elements.btnDownloadUpdate.addEventListener('click', async () => {
+        elements.btnDownloadUpdate.disabled = true;
+        elements.appVersionDesc.textContent = 'Downloading update...';
+        elements.updateProgressContainer.style.display = 'block';
+        await window.api.updater.download();
+    });
+
+    elements.btnInstallUpdate.addEventListener('click', async () => {
+        await window.api.updater.install();
+    });
+
+    // Handle events from main process
+    window.api.updater.onUpdateAvailable((info) => {
+        elements.appVersionDesc.textContent = `Version ${info.version} is available!`;
+        elements.btnCheckUpdate.disabled = false;
+        elements.updateActionContainer.style.display = 'flex';
+        elements.btnDownloadUpdate.style.display = 'block';
+        elements.btnInstallUpdate.style.display = 'none';
+
+        addLogEntry({
+            type: 'message',
+            timestamp: Date.now(),
+            topic: 'System',
+            payload: `Update available: v${info.version}`
+        });
+    });
+
+    window.api.updater.onUpdateNotAvailable((info) => {
+        updateVersionDisplay();
+        elements.btnCheckUpdate.disabled = false;
+        elements.updateActionContainer.style.display = 'none';
+    });
+
+    window.api.updater.onError((error) => {
+        elements.appVersionDesc.textContent = `Update error: ${error}`;
+        elements.btnCheckUpdate.disabled = false;
+        elements.updateActionContainer.style.display = 'none';
+        elements.updateProgressContainer.style.display = 'none';
+    });
+
+    window.api.updater.onDownloadProgress((progress) => {
+        const percent = Math.round(progress.percent);
+        elements.updateProgressBar.style.width = `${percent}%`;
+        elements.updateProgressText.textContent = `${percent}% (${(progress.transferred / 1024 / 1024).toFixed(1)}MB / ${(progress.total / 1024 / 1024).toFixed(1)}MB)`;
+    });
+
+    window.api.updater.onUpdateDownloaded((info) => {
+        elements.appVersionDesc.textContent = `Version ${info.version} downloaded and ready to install.`;
+        elements.updateActionContainer.style.display = 'flex';
+        elements.btnDownloadUpdate.style.display = 'none';
+        elements.btnInstallUpdate.style.display = 'block';
+        elements.updateProgressContainer.style.display = 'none';
+    });
+}
+
+async function updateVersionDisplay() {
+    const version = await window.api.app.getVersion();
+    elements.appVersionDesc.textContent = `Current version: v${version}`;
+}
+
 // MQTT Events
 function setupMqttEvents() {
     window.api.mqtt.onStatus((data) => {
@@ -687,6 +766,9 @@ function setupMqttEvents() {
 
 // Load Initial Data
 async function loadInitialData() {
+    // Show current version
+    await updateVersionDisplay();
+
     // Load connection config
     const connConfig = await window.api.config.getConnection();
     if (connConfig) {
