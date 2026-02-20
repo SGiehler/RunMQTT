@@ -39,6 +39,7 @@ const elements = {
     btnSaveBinding: document.getElementById('btnSaveBinding'),
     btnCancelBinding: document.getElementById('btnCancelBinding'),
     closeBindingModal: document.getElementById('closeBindingModal'),
+    bindingNotify: document.getElementById('bindingNotify'),
 
     // Notifications
     notificationsList: document.getElementById('notificationsList'),
@@ -184,6 +185,7 @@ function openBindingModal(index = -1) {
         elements.payloadValue.value = binding.payloadValue || '';
         elements.payloadValueGroup.style.display =
             binding.payloadMatch && binding.payloadMatch !== 'any' ? 'block' : 'none';
+        elements.bindingNotify.checked = binding.notify || false;
         currentActions = JSON.parse(JSON.stringify(binding.actions || []));
     } else {
         elements.bindingModalTitle.textContent = 'Add Command Binding';
@@ -191,6 +193,7 @@ function openBindingModal(index = -1) {
         elements.bindingTopic.value = '';
         elements.payloadMatch.value = 'any';
         elements.payloadValue.value = '';
+        elements.bindingNotify.checked = false;
         elements.payloadValueGroup.style.display = 'none';
         currentActions = [];
     }
@@ -339,6 +342,7 @@ async function saveBinding() {
         payloadMatch: elements.payloadMatch.value,
         payloadValue: elements.payloadValue.value,
         actions: currentActions,
+        notify: elements.bindingNotify.checked,
         enabled: editingBindingIndex >= 0 ? bindings[editingBindingIndex].enabled : true
     };
 

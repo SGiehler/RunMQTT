@@ -322,8 +322,16 @@ async function executeBinding(binding, topic, payload) {
             await commandExecutor.execute(processedAction);
         }
         logEntry.success = true;
+
+        if (binding.notify) {
+            showNotification(`Command Executed: ${binding.name}`, `Topic: ${topic}`);
+        }
     } catch (error) {
         logEntry.error = error.message;
+
+        if (binding.notify) {
+            showNotification(`Command Failed: ${binding.name}`, `Error: ${error.message}`);
+        }
     }
 
     if (mainWindow && !mainWindow.isDestroyed()) {
