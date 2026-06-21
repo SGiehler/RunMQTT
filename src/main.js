@@ -688,7 +688,7 @@ function setupUpdaterHandlers() {
     });
 
     window.api.updater.onUpdateNotAvailable((info) => {
-        updateVersionDisplay();
+        updateVersionDisplay(info ? info.version : null);
         elements.btnCheckUpdate.disabled = false;
         elements.updateActionContainer.style.display = 'none';
     });
@@ -715,9 +715,13 @@ function setupUpdaterHandlers() {
     });
 }
 
-async function updateVersionDisplay() {
+async function updateVersionDisplay(latestVersion = null) {
     const version = await window.api.app.getVersion();
-    elements.appVersionDesc.textContent = `Current version: v${version}`;
+    if (latestVersion) {
+        elements.appVersionDesc.textContent = `Current version: v${version} (Latest: v${latestVersion})`;
+    } else {
+        elements.appVersionDesc.textContent = `Current version: v${version}`;
+    }
 }
 
 // MQTT Events
@@ -798,6 +802,9 @@ async function loadInitialData() {
     // Check current connection status
     const status = await window.api.mqtt.getStatus();
     updateConnectionStatus(status.connected ? 'connected' : 'disconnected');
+
+    // Check for updates automatically on startup
+    window.api.updater.check();
 }
 
 // Utility

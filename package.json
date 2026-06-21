@@ -28,7 +28,8 @@
       {
         "provider": "github",
         "owner": "SGiehler",
-        "repo": "RunMQTT"
+        "repo": "RunMQTT",
+        "releaseType": "release"
       }
     ],
     "directories": {

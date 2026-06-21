@@ -244,7 +244,16 @@ function setupIPC() {
     // Updater
     autoUpdater.autoDownload = false;
 
-    ipcMain.handle('updater:check', () => {
+    ipcMain.handle('updater:check', async () => {
+        if (isDev) {
+            // In development, mock a check and notify renderer
+            setTimeout(() => {
+                if (mainWindow && !mainWindow.isDestroyed()) {
+                    mainWindow.webContents.send('updater:update-not-available', { version: app.getVersion() });
+                }
+            }, 500);
+            return { updateInfo: { version: app.getVersion() } };
+        }
         return autoUpdater.checkForUpdates().catch(err => ({ error: err.message }));
     });
 
@@ -481,8 +490,7 @@ app.whenReady().then(() => {
         mqttClient.connect(config);
     }
 
-    // Auto check for updates
-    autoUpdater.checkForUpdates().catch(err => console.error('Update check failed:', err));
+    // Auto check for updates (handled by renderer on startup)
 });
 
 app.on('window-all-closed', () => {
