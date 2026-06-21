@@ -1,7 +1,7 @@
 {
   "name": "runmqtt",
   "productName": "RunMQTT",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Windows desktop app for MQTT-based command execution",
   "main": "electron/main.js",
   "scripts": {
