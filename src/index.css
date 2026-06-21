@@ -351,9 +351,15 @@ body {
 }
 
 .btn-icon-only {
-  padding: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
   background: none;
   border: none;
+  border-radius: var(--border-radius-sm);
   cursor: pointer;
   font-size: 16px;
   transition: var(--transition);
@@ -361,6 +367,7 @@ body {
 
 .btn-icon-only:hover {
   transform: scale(1.1);
+  background: var(--bg-hover);
 }
 
 .button-group {
@@ -566,6 +573,7 @@ body {
 
 .binding-actions {
   display: flex;
+  align-items: center;
   gap: 8px;
 }
 
