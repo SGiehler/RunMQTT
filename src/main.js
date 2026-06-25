@@ -11,6 +11,7 @@ const elements = {
     // Navigation
     navItems: document.querySelectorAll('.nav-item'),
     views: document.querySelectorAll('.view'),
+    brandVersion: document.getElementById('brandVersion'),
 
     // Connection
     brokerUrl: document.getElementById('brokerUrl'),
@@ -798,6 +799,9 @@ function setupUpdaterHandlers() {
 
 async function updateVersionDisplay(latestVersion = null) {
     const version = await window.api.app.getVersion();
+    if (elements.brandVersion) {
+        elements.brandVersion.textContent = `v${version}`;
+    }
     if (latestVersion) {
         elements.appVersionDesc.textContent = `Current version: v${version} (Latest: v${latestVersion})`;
     } else {

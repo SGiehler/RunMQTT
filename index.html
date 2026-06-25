@@ -9,79 +9,113 @@
   <title>RunMQTT</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/src/index.css">
 </head>
 
 <body>
-  <div id="app">
-    <aside class="sidebar">
+  <div id="app" class="ant-layout">
+    <!-- Sidebar / Navigation -->
+    <aside class="sidebar ant-layout-sider">
       <div class="logo">
-        <div class="app-icon"><img class="app-icon" src="assets/icon.png" alt="RunMQTT"></div>
-        <span>RunMQTT</span>
+        <div class="app-icon-wrapper">
+          <img class="app-icon" src="assets/icon.png" alt="RunMQTT">
+        </div>
+        <div class="logo-text-wrapper">
+          <span class="brand-text">RunMQTT</span>
+          <span class="brand-version" id="brandVersion">v1.3.1</span>
+        </div>
       </div>
-      <nav class="nav-menu">
-        <button class="nav-item active" data-view="connection">
-          <span class="nav-icon">🔌</span>
-          <span>Connection</span>
+      
+      <nav class="nav-menu ant-menu">
+        <button class="nav-item active ant-menu-item" data-view="connection">
+          <span class="nav-icon">
+            <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 10h-1.25c-1 0-1.75-.75-1.75-1.75V4h-6v4.25c0 1-.75 1.75-1.75 1.75H6c-1.1 0-2 .9-2 2v3c0 2.2 1.8 4 4 4h8c2.2 0 4-1.8 4-4v-3c0-1.1-.9-2-2-2zM9 2v2M15 2v2M12 18v4"/>
+            </svg>
+          </span>
+          <span class="nav-label">Connection</span>
         </button>
-        <button class="nav-item" data-view="bindings">
-          <span class="nav-icon">⚡</span>
-          <span>Command Bindings</span>
+        <button class="nav-item ant-menu-item" data-view="bindings">
+          <span class="nav-icon">
+            <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+          </span>
+          <span class="nav-label">Command Bindings</span>
         </button>
-        <button class="nav-item" data-view="notifications">
-          <span class="nav-icon">🔔</span>
-          <span>Notifications</span>
+        <button class="nav-item ant-menu-item" data-view="notifications">
+          <span class="nav-icon">
+            <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+          </span>
+          <span class="nav-label">Notifications</span>
         </button>
-        <button class="nav-item" data-view="log">
-          <span class="nav-icon">📋</span>
-          <span>Activity Log</span>
+        <button class="nav-item ant-menu-item" data-view="log">
+          <span class="nav-icon">
+            <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+          </span>
+          <span class="nav-label">Activity Log</span>
         </button>
-        <button class="nav-item" data-view="settings">
-          <span class="nav-icon">⚙️</span>
-          <span>Settings</span>
+        <button class="nav-item ant-menu-item" data-view="settings">
+          <span class="nav-icon">
+            <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </span>
+          <span class="nav-label">Settings</span>
         </button>
       </nav>
+      
       <div class="sidebar-footer">
-        <div class="connection-indicator" id="connectionIndicator">
+        <div class="connection-indicator ant-tag" id="connectionIndicator">
           <span class="status-dot disconnected"></span>
           <span class="status-text">Disconnected</span>
         </div>
       </div>
     </aside>
 
-    <main class="main-content">
+    <!-- Main Content Area -->
+    <main class="main-content ant-layout-content">
       <!-- Connection View -->
       <section id="view-connection" class="view active">
         <div class="view-header">
           <h1>Connection Settings</h1>
         </div>
         <div class="view-body">
-          <div class="card">
+          <div class="card ant-card">
             <div class="card-header">
               <h2>MQTT Broker</h2>
             </div>
             <div class="card-body">
-              <div class="form-group">
-                <label for="brokerUrl">Broker URL</label>
-                <input type="text" id="brokerUrl" placeholder="mqtt://192.168.1.100:1883" />
+              <div class="form-group ant-form-item">
+                <label for="brokerUrl" class="ant-form-item-label">Broker URL</label>
+                <input type="text" id="brokerUrl" class="ant-input" placeholder="mqtt://192.168.1.100:1883" />
                 <span class="form-hint">e.g., mqtt://localhost:1883 or mqtts://broker.example.com:8883</span>
               </div>
               <div class="form-row">
-                <div class="form-group">
-                  <label for="username">Username (optional)</label>
-                  <input type="text" id="username" placeholder="Username" />
+                <div class="form-group ant-form-item">
+                  <label for="username" class="ant-form-item-label">Username (optional)</label>
+                  <input type="text" id="username" class="ant-input" placeholder="Username" />
                 </div>
-                <div class="form-group">
-                  <label for="password">Password (optional)</label>
-                  <input type="password" id="password" placeholder="Password" />
+                <div class="form-group ant-form-item">
+                  <label for="password" class="ant-form-item-label">Password (optional)</label>
+                  <input type="password" id="password" class="ant-input" placeholder="Password" />
                 </div>
               </div>
-              <div class="form-group">
-                <label for="clientId">Client ID (optional)</label>
-                <input type="text" id="clientId" placeholder="Auto-generated if empty" />
+              <div class="form-group ant-form-item">
+                <label for="clientId" class="ant-form-item-label">Client ID (optional)</label>
+                <input type="text" id="clientId" class="ant-input" placeholder="Auto-generated if empty" />
               </div>
-              <div class="setting-item" style="margin-top: 15px; border-bottom: none; padding-bottom: 0;">
+              <div class="setting-item" style="margin-top: 20px; border-bottom: none; padding-bottom: 0;">
                 <div class="setting-info">
                   <div class="setting-title">Enable SSL/TLS</div>
                   <div class="setting-desc">Encrypt connection with the broker</div>
@@ -91,7 +125,9 @@
                   <span class="toggle-slider"></span>
                 </label>
               </div>
-              <div id="tlsSection" style="display: none; border-left: 3px solid var(--accent-primary); padding-left: 15px; margin-bottom: 20px; margin-top: 15px;">
+              
+              <!-- TLS Settings Panel -->
+              <div id="tlsSection" style="display: none;" class="tls-panel-inset">
                 <div class="setting-item" style="border-bottom: none; padding-bottom: 0; padding-top: 0; margin-bottom: 15px;">
                   <div class="setting-info">
                     <div class="setting-title">Ignore Certificate Verification</div>
@@ -102,40 +138,51 @@
                     <span class="toggle-slider"></span>
                   </label>
                 </div>
-                <div class="form-group">
-                  <label for="tlsCaPath">CA Certificate File (optional)</label>
+                <div class="form-group ant-form-item">
+                  <label for="tlsCaPath" class="ant-form-item-label">CA Certificate File (optional)</label>
                   <div class="file-input-group">
-                    <input type="text" id="tlsCaPath" placeholder="Path to CA certificate (PEM format)" readonly style="flex-grow: 1;" />
-                    <button type="button" id="btnBrowseCa" class="btn btn-secondary" style="padding: 10px 15px;">Browse...</button>
-                    <button type="button" id="btnClearCa" class="btn btn-danger-outline" style="padding: 10px 15px; display: none;">Clear</button>
+                    <input type="text" id="tlsCaPath" class="ant-input" placeholder="Path to CA certificate (PEM format)" readonly style="flex-grow: 1;" />
+                    <button type="button" id="btnBrowseCa" class="btn btn-secondary ant-btn ant-btn-default" style="padding: 10px 15px;">Browse...</button>
+                    <button type="button" id="btnClearCa" class="btn btn-danger-outline ant-btn ant-btn-dashed ant-btn-dangerous" style="padding: 10px 15px; display: none;">Clear</button>
                   </div>
                 </div>
                 <div class="form-row">
-                  <div class="form-group">
-                    <label for="tlsCertPath">Client Certificate File (optional)</label>
+                  <div class="form-group ant-form-item">
+                    <label for="tlsCertPath" class="ant-form-item-label">Client Certificate File (optional)</label>
                     <div class="file-input-group">
-                      <input type="text" id="tlsCertPath" placeholder="Path to client certificate" readonly style="flex-grow: 1;" />
-                      <button type="button" id="btnBrowseCert" class="btn btn-secondary" style="padding: 10px 15px;">Browse...</button>
-                      <button type="button" id="btnClearCert" class="btn btn-danger-outline" style="padding: 10px 15px; display: none;">Clear</button>
+                      <input type="text" id="tlsCertPath" class="ant-input" placeholder="Path to client certificate" readonly style="flex-grow: 1;" />
+                      <button type="button" id="btnBrowseCert" class="btn btn-secondary ant-btn ant-btn-default" style="padding: 10px 15px;">Browse...</button>
+                      <button type="button" id="btnClearCert" class="btn btn-danger-outline ant-btn ant-btn-dashed ant-btn-dangerous" style="padding: 10px 15px; display: none;">Clear</button>
                     </div>
                   </div>
-                  <div class="form-group">
-                    <label for="tlsKeyPath">Client Private Key File (optional)</label>
+                  <div class="form-group ant-form-item">
+                    <label for="tlsKeyPath" class="ant-form-item-label">Client Private Key File (optional)</label>
                     <div class="file-input-group">
-                      <input type="text" id="tlsKeyPath" placeholder="Path to private key" readonly style="flex-grow: 1;" />
-                      <button type="button" id="btnBrowseKey" class="btn btn-secondary" style="padding: 10px 15px;">Browse...</button>
-                      <button type="button" id="btnClearKey" class="btn btn-danger-outline" style="padding: 10px 15px; display: none;">Clear</button>
+                      <input type="text" id="tlsKeyPath" class="ant-input" placeholder="Path to private key" readonly style="flex-grow: 1;" />
+                      <button type="button" id="btnBrowseKey" class="btn btn-secondary ant-btn ant-btn-default" style="padding: 10px 15px;">Browse...</button>
+                      <button type="button" id="btnClearKey" class="btn btn-danger-outline ant-btn ant-btn-dashed ant-btn-dangerous" style="padding: 10px 15px; display: none;">Clear</button>
                     </div>
                   </div>
                 </div>
               </div>
+              
               <div class="button-group">
-                <button id="btnConnect" class="btn btn-primary">
-                  <span class="btn-icon">🔗</span>
+                <button id="btnConnect" class="btn btn-primary ant-btn ant-btn-primary">
+                  <span class="btn-icon">
+                    <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                    </svg>
+                  </span>
                   Connect
                 </button>
-                <button id="btnDisconnect" class="btn btn-secondary" disabled>
-                  <span class="btn-icon">🔌</span>
+                <button id="btnDisconnect" class="btn btn-secondary ant-btn ant-btn-default" disabled>
+                  <span class="btn-icon">
+                    <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M18.36 6.64a9 9 0 1 1-12.73 0"/>
+                      <line x1="12" y1="2" x2="12" y2="12"/>
+                    </svg>
+                  </span>
                   Disconnect
                 </button>
               </div>
@@ -148,15 +195,24 @@
       <section id="view-bindings" class="view">
         <div class="view-header">
           <h1>Command Bindings</h1>
-          <button id="btnAddBinding" class="btn btn-primary">
-            <span class="btn-icon">+</span>
+          <button id="btnAddBinding" class="btn btn-primary ant-btn ant-btn-primary">
+            <span class="btn-icon">
+              <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+            </span>
             Add Binding
           </button>
         </div>
         <div class="view-body">
           <div class="bindings-list" id="bindingsList">
             <div class="empty-state" id="emptyBindings">
-              <div class="empty-icon">⚡</div>
+              <div class="empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+              </div>
               <p>No command bindings yet</p>
               <p class="empty-hint">Click "Add Binding" to create your first automation</p>
             </div>
@@ -168,15 +224,24 @@
       <section id="view-notifications" class="view">
         <div class="view-header">
           <h1>Notification Bindings</h1>
-          <button id="btnAddNotification" class="btn btn-primary">
-            <span class="btn-icon">+</span>
+          <button id="btnAddNotification" class="btn btn-primary ant-btn ant-btn-primary">
+            <span class="btn-icon">
+              <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+            </span>
             Add Notification
           </button>
         </div>
         <div class="view-body">
           <div class="bindings-list" id="notificationsList">
             <div class="empty-state" id="emptyNotifications">
-              <div class="empty-icon">🔔</div>
+              <div class="empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+              </div>
               <p>No notification bindings yet</p>
               <p class="empty-hint">Create bindings to show Windows notifications from MQTT messages</p>
             </div>
@@ -188,17 +253,33 @@
       <section id="view-log" class="view">
         <div class="view-header">
           <h1>Activity Log</h1>
-          <button id="btnClearLog" class="btn btn-secondary">
-            <span class="btn-icon">🗑️</span>
+          <button id="btnClearLog" class="btn btn-secondary ant-btn ant-btn-default">
+            <span class="btn-icon">
+              <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                <line x1="10" y1="11" x2="10" y2="17"/>
+                <line x1="14" y1="11" x2="14" y2="17"/>
+              </svg>
+            </span>
             Clear Log
           </button>
         </div>
         <div class="view-body">
-          <div class="log-container" id="logContainer">
-            <div class="empty-state" id="emptyLog">
-              <div class="empty-icon">📋</div>
-              <p>No activity yet</p>
-              <p class="empty-hint">Messages and command executions will appear here</p>
+          <div class="log-container-inset">
+            <div class="log-container" id="logContainer">
+              <div class="empty-state" id="emptyLog">
+                <div class="empty-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                  </svg>
+                </div>
+                <p>No activity yet</p>
+                <p class="empty-hint">Messages and command executions will appear here</p>
+              </div>
             </div>
           </div>
         </div>
@@ -211,7 +292,8 @@
         </div>
         <div class="view-body">
           <div class="settings-grid">
-            <div class="card settings-card">
+            <!-- Startup settings card -->
+            <div class="card settings-card ant-card">
               <div class="card-header">
                 <h2>🚀 Startup</h2>
               </div>
@@ -249,7 +331,8 @@
               </div>
             </div>
 
-            <div class="card settings-card">
+            <!-- Behavior settings card -->
+            <div class="card settings-card ant-card">
               <div class="card-header">
                 <h2>🖥️ Behavior</h2>
               </div>
@@ -267,7 +350,8 @@
               </div>
             </div>
 
-            <div class="card settings-card">
+            <!-- Updates settings card -->
+            <div class="card settings-card ant-card">
               <div class="card-header">
                 <h2>🔄 Updates</h2>
               </div>
@@ -277,21 +361,19 @@
                     <div class="setting-title">App Version</div>
                     <div class="setting-desc" id="appVersionDesc">Checking version...</div>
                   </div>
-                  <div class="setting-actions" style="display: flex; align-items: center; gap: 8px;">
-                    <button id="btnCheckUpdate" class="btn btn-secondary">Check for Updates</button>
+                  <div class="setting-actions">
+                    <button id="btnCheckUpdate" class="btn btn-secondary ant-btn ant-btn-default">Check for Updates</button>
                     <div id="updateActionContainer" style="display: none; align-items: center; gap: 8px;">
-                      <button id="btnDownloadUpdate" class="btn btn-primary" style="display: none;">Download Update</button>
-                      <button id="btnInstallUpdate" class="btn btn-primary" style="display: none;">Install Update</button>
+                      <button id="btnDownloadUpdate" class="btn btn-primary ant-btn ant-btn-primary" style="display: none;">Download Update</button>
+                      <button id="btnInstallUpdate" class="btn btn-primary ant-btn ant-btn-primary" style="display: none;">Install Update</button>
                     </div>
                   </div>
                 </div>
-                <div id="updateProgressContainer" style="display: none; padding: 0 1rem 1rem;">
-                  <div class="progress-bar-bg"
-                    style="width: 100%; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; overflow: hidden;">
-                    <div id="updateProgressBar" style="width: 0%; height: 100%; background: var(--accent-primary);"></div>
+                <div id="updateProgressContainer" style="display: none; margin-top: 15px;">
+                  <div class="progress-bar-bg">
+                    <div id="updateProgressBar" style="width: 0%;"></div>
                   </div>
-                  <div id="updateProgressText"
-                    style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; text-align: center;">0%</div>
+                  <div id="updateProgressText">0%</div>
                 </div>
               </div>
             </div>
@@ -305,38 +387,43 @@
   <!-- Binding Editor Modal -->
   <div class="modal" id="bindingModal">
     <div class="modal-backdrop"></div>
-    <div class="modal-content">
+    <div class="modal-content ant-modal">
       <div class="modal-header">
         <h2 id="bindingModalTitle">Add Command Binding</h2>
-        <button class="modal-close" id="closeBindingModal">&times;</button>
+        <button class="modal-close" id="closeBindingModal">
+          <svg class="modal-close-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
       </div>
       <div class="modal-body">
-        <div class="form-group">
-          <label for="bindingName">Binding Name</label>
-          <input type="text" id="bindingName" placeholder="e.g., Turn on lights" />
+        <div class="form-group ant-form-item">
+          <label for="bindingName" class="ant-form-item-label">Binding Name</label>
+          <input type="text" id="bindingName" class="ant-input" placeholder="e.g., Turn on lights" />
         </div>
-        <div class="form-group">
-          <label for="bindingTopic">MQTT Topic</label>
-          <input type="text" id="bindingTopic" placeholder="e.g., home/lights/control" />
+        <div class="form-group ant-form-item">
+          <label for="bindingTopic" class="ant-form-item-label">MQTT Topic</label>
+          <input type="text" id="bindingTopic" class="ant-input" placeholder="e.g., home/lights/control" />
           <span class="form-hint">Use + for single-level wildcard, # for multi-level</span>
         </div>
         <div class="form-row">
-          <div class="form-group">
-            <label for="payloadMatch">Payload Match</label>
-            <select id="payloadMatch">
+          <div class="form-group ant-form-item">
+            <label for="payloadMatch" class="ant-form-item-label">Payload Match</label>
+            <select id="payloadMatch" class="ant-select">
               <option value="any">Any payload</option>
               <option value="exact">Exact match</option>
               <option value="contains">Contains</option>
               <option value="regex">Regex</option>
             </select>
           </div>
-          <div class="form-group" id="payloadValueGroup" style="display: none;">
-            <label for="payloadValue">Match Value</label>
-            <input type="text" id="payloadValue" placeholder="Value to match" />
+          <div class="form-group ant-form-item" id="payloadValueGroup" style="display: none;">
+            <label for="payloadValue" class="ant-form-item-label">Match Value</label>
+            <input type="text" id="payloadValue" class="ant-input" placeholder="Value to match" />
           </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group ant-form-item">
           <div class="setting-item" style="padding: 0; margin-bottom: 0px; border: none; background: transparent;">
             <div class="setting-info">
               <div class="setting-title">Show Notification</div>
@@ -352,14 +439,14 @@
         <div class="actions-section">
           <div class="section-header">
             <h3>Actions</h3>
-            <button type="button" id="btnAddAction" class="btn btn-small btn-secondary">+ Add Action</button>
+            <button type="button" id="btnAddAction" class="btn btn-small btn-secondary ant-btn ant-btn-default">+ Add Action</button>
           </div>
           <div id="actionsList" class="actions-list"></div>
         </div>
       </div>
       <div class="modal-footer">
-        <button id="btnCancelBinding" class="btn btn-secondary">Cancel</button>
-        <button id="btnSaveBinding" class="btn btn-primary">Save Binding</button>
+        <button id="btnCancelBinding" class="btn btn-secondary ant-btn ant-btn-default">Cancel</button>
+        <button id="btnSaveBinding" class="btn btn-primary ant-btn ant-btn-primary">Save Binding</button>
       </div>
     </div>
   </div>
@@ -367,46 +454,58 @@
   <!-- Notification Editor Modal -->
   <div class="modal" id="notificationModal">
     <div class="modal-backdrop"></div>
-    <div class="modal-content">
+    <div class="modal-content ant-modal">
       <div class="modal-header">
         <h2 id="notificationModalTitle">Add Notification Binding</h2>
-        <button class="modal-close" id="closeNotificationModal">&times;</button>
+        <button class="modal-close" id="closeNotificationModal">
+          <svg class="modal-close-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
       </div>
       <div class="modal-body">
-        <div class="form-group">
-          <label for="notifTopic">MQTT Topic</label>
-          <input type="text" id="notifTopic" placeholder="e.g., alerts/doorbell" />
+        <div class="form-group ant-form-item">
+          <label for="notifTopic" class="ant-form-item-label">MQTT Topic</label>
+          <input type="text" id="notifTopic" class="ant-input" placeholder="e.g., alerts/doorbell" />
         </div>
-        <div class="form-group">
-          <label for="notifTitle">Notification Title</label>
-          <input type="text" id="notifTitle" placeholder="e.g., Doorbell Alert" />
+        <div class="form-group ant-form-item">
+          <label for="notifTitle" class="ant-form-item-label">Notification Title</label>
+          <input type="text" id="notifTitle" class="ant-input" placeholder="e.g., Doorbell Alert" />
           <span class="form-hint">Placeholders: {payload}, {topic}, or JSONPath: {$.data.value}</span>
         </div>
-        <div class="form-group">
-          <label for="notifBody">Notification Body</label>
-          <textarea id="notifBody" rows="3" placeholder="e.g., Someone is at the door - {$.message}"></textarea>
+        <div class="form-group ant-form-item">
+          <label for="notifBody" class="ant-form-item-label">Notification Body</label>
+          <textarea id="notifBody" class="ant-input" rows="3" placeholder="e.g., Someone is at the door - {$.message}"></textarea>
           <span class="form-hint">Use {$.json.path} to extract values from JSON payloads</span>
         </div>
       </div>
       <div class="modal-footer">
-        <button id="btnCancelNotification" class="btn btn-secondary">Cancel</button>
-        <button id="btnSaveNotification" class="btn btn-primary">Save Notification</button>
+        <button id="btnCancelNotification" class="btn btn-secondary ant-btn ant-btn-default">Cancel</button>
+        <button id="btnSaveNotification" class="btn btn-primary ant-btn ant-btn-primary">Save Notification</button>
       </div>
     </div>
   </div>
 
   <!-- Action Editor Template (hidden) -->
   <template id="actionTemplate">
-    <div class="action-item" data-action-index="">
+    <div class="action-item ant-card" data-action-index="">
       <div class="action-header">
-        <select class="action-type">
+        <select class="action-type ant-select">
           <option value="run-program">Run Program</option>
           <option value="shell-command">Shell Command</option>
           <option value="batch-script">Batch Script</option>
           <option value="volume">Set Volume</option>
           <option value="keyboard">Send Keys</option>
         </select>
-        <button type="button" class="btn-icon-only btn-remove-action" title="Remove action">🗑️</button>
+        <button type="button" class="btn-icon-only btn-remove-action ant-btn ant-btn-dangerous ant-btn-dashed" title="Remove action">
+          <svg class="btn-svg" style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            <line x1="10" y1="11" x2="10" y2="17"/>
+            <line x1="14" y1="11" x2="14" y2="17"/>
+          </svg>
+        </button>
       </div>
       <div class="action-config"></div>
     </div>
