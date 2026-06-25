@@ -1,5 +1,6 @@
 const mqtt = require('mqtt');
 const EventEmitter = require('events');
+const fs = require('fs');
 
 class MqttClient extends EventEmitter {
     constructor() {
@@ -28,7 +29,36 @@ class MqttClient extends EventEmitter {
             }
 
             try {
-                this.client = mqtt.connect(config.brokerUrl, options);
+                let brokerUrl = config.brokerUrl;
+                const isSecure = config.tlsEnabled || 
+                                 brokerUrl.startsWith('mqtts://') || 
+                                 brokerUrl.startsWith('wss://') || 
+                                 brokerUrl.startsWith('ssl://') || 
+                                 brokerUrl.startsWith('tls://');
+
+                if (isSecure) {
+                    if (brokerUrl.startsWith('mqtt://')) {
+                        brokerUrl = brokerUrl.replace('mqtt://', 'mqtts://');
+                    } else if (brokerUrl.startsWith('ws://')) {
+                        brokerUrl = brokerUrl.replace('ws://', 'wss://');
+                    } else if (!brokerUrl.includes('://')) {
+                        brokerUrl = 'mqtts://' + brokerUrl;
+                    }
+
+                    options.rejectUnauthorized = config.rejectUnauthorized !== false;
+
+                    if (config.caPath) {
+                        options.ca = fs.readFileSync(config.caPath);
+                    }
+                    if (config.certPath) {
+                        options.cert = fs.readFileSync(config.certPath);
+                    }
+                    if (config.keyPath) {
+                        options.key = fs.readFileSync(config.keyPath);
+                    }
+                }
+
+                this.client = mqtt.connect(brokerUrl, options);
 
                 this.client.on('connect', () => {
                     this.connected = true;

@@ -81,6 +81,54 @@
                 <label for="clientId">Client ID (optional)</label>
                 <input type="text" id="clientId" placeholder="Auto-generated if empty" />
               </div>
+              <div class="setting-item" style="margin-top: 15px; border-bottom: none; padding-bottom: 0;">
+                <div class="setting-info">
+                  <div class="setting-title">Enable SSL/TLS</div>
+                  <div class="setting-desc">Encrypt connection with the broker</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="tlsEnabled" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div id="tlsSection" style="display: none; border-left: 3px solid var(--accent-primary); padding-left: 15px; margin-bottom: 20px; margin-top: 15px;">
+                <div class="setting-item" style="border-bottom: none; padding-bottom: 0; padding-top: 0; margin-bottom: 15px;">
+                  <div class="setting-info">
+                    <div class="setting-title">Ignore Certificate Verification</div>
+                    <div class="setting-desc">Allow self-signed or invalid certificates (less secure)</div>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="tlsIgnoreVerification" />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label for="tlsCaPath">CA Certificate File (optional)</label>
+                  <div class="file-input-group">
+                    <input type="text" id="tlsCaPath" placeholder="Path to CA certificate (PEM format)" readonly style="flex-grow: 1;" />
+                    <button type="button" id="btnBrowseCa" class="btn btn-secondary" style="padding: 10px 15px;">Browse...</button>
+                    <button type="button" id="btnClearCa" class="btn btn-danger-outline" style="padding: 10px 15px; display: none;">Clear</button>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="tlsCertPath">Client Certificate File (optional)</label>
+                    <div class="file-input-group">
+                      <input type="text" id="tlsCertPath" placeholder="Path to client certificate" readonly style="flex-grow: 1;" />
+                      <button type="button" id="btnBrowseCert" class="btn btn-secondary" style="padding: 10px 15px;">Browse...</button>
+                      <button type="button" id="btnClearCert" class="btn btn-danger-outline" style="padding: 10px 15px; display: none;">Clear</button>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="tlsKeyPath">Client Private Key File (optional)</label>
+                    <div class="file-input-group">
+                      <input type="text" id="tlsKeyPath" placeholder="Path to private key" readonly style="flex-grow: 1;" />
+                      <button type="button" id="btnBrowseKey" class="btn btn-secondary" style="padding: 10px 15px;">Browse...</button>
+                      <button type="button" id="btnClearKey" class="btn btn-danger-outline" style="padding: 10px 15px; display: none;">Clear</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div class="button-group">
                 <button id="btnConnect" class="btn btn-primary">
                   <span class="btn-icon">🔗</span>

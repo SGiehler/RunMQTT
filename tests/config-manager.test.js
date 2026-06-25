@@ -36,7 +36,12 @@ describe('ConfigManager', () => {
                 brokerUrl: '',
                 username: '',
                 password: '',
-                clientId: ''
+                clientId: '',
+                tlsEnabled: false,
+                rejectUnauthorized: true,
+                caPath: '',
+                certPath: '',
+                keyPath: ''
             });
         });
 

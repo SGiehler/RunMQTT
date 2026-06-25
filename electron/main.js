@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, Tray, Menu, nativeImage, Notification } = require('electron');
+const { app, BrowserWindow, ipcMain, Tray, Menu, nativeImage, Notification, dialog } = require('electron');
 const path = require('path');
 const { JSONPath } = require('jsonpath-plus');
 const MqttClient = require('./mqtt-client');
@@ -239,6 +239,15 @@ function setupIPC() {
         } catch (error) {
             return { success: false, error: error.message };
         }
+    });
+
+    // Dialogs
+    ipcMain.handle('dialog:openFile', async (event, options) => {
+        const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, options);
+        if (canceled) {
+            return null;
+        }
+        return filePaths[0];
     });
 
     // Updater

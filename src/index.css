@@ -867,3 +867,32 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent-secondary);
 }
+
+/* ===== TLS Config ===== */
+.btn-danger-outline {
+  background: transparent;
+  color: var(--error);
+  border: 1px solid var(--error);
+}
+
+.btn-danger-outline:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: var(--error);
+}
+
+.file-input-group {
+  display: flex;
+  gap: 10px;
+}
+
+.file-input-group input[readonly] {
+  background: rgba(0, 0, 0, 0.15);
+  cursor: default;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#tlsSection {
+  transition: all 0.3s ease-in-out;
+}

@@ -17,6 +17,18 @@ const elements = {
     username: document.getElementById('username'),
     password: document.getElementById('password'),
     clientId: document.getElementById('clientId'),
+    tlsEnabled: document.getElementById('tlsEnabled'),
+    tlsSection: document.getElementById('tlsSection'),
+    tlsIgnoreVerification: document.getElementById('tlsIgnoreVerification'),
+    tlsCaPath: document.getElementById('tlsCaPath'),
+    btnBrowseCa: document.getElementById('btnBrowseCa'),
+    btnClearCa: document.getElementById('btnClearCa'),
+    tlsCertPath: document.getElementById('tlsCertPath'),
+    btnBrowseCert: document.getElementById('btnBrowseCert'),
+    btnClearCert: document.getElementById('btnClearCert'),
+    tlsKeyPath: document.getElementById('tlsKeyPath'),
+    btnBrowseKey: document.getElementById('btnBrowseKey'),
+    btnClearKey: document.getElementById('btnClearKey'),
     btnConnect: document.getElementById('btnConnect'),
     btnDisconnect: document.getElementById('btnDisconnect'),
     connectionIndicator: document.getElementById('connectionIndicator'),
@@ -114,12 +126,81 @@ function switchView(viewId) {
 
 // Connection
 function setupConnectionHandlers() {
+    // Show/hide TLS options section & auto-adjust URL protocol
+    elements.tlsEnabled.addEventListener('change', () => {
+        const isTls = elements.tlsEnabled.checked;
+        elements.tlsSection.style.display = isTls ? 'block' : 'none';
+
+        // Auto-update URL protocol to match toggle state
+        let url = elements.brokerUrl.value.trim();
+        if (isTls) {
+            if (url.startsWith('mqtt://')) {
+                elements.brokerUrl.value = url.replace('mqtt://', 'mqtts://');
+            } else if (url.startsWith('ws://')) {
+                elements.brokerUrl.value = url.replace('ws://', 'wss://');
+            } else if (url && !url.includes('://')) {
+                elements.brokerUrl.value = 'mqtts://' + url;
+            }
+        } else {
+            if (url.startsWith('mqtts://')) {
+                elements.brokerUrl.value = url.replace('mqtts://', 'mqtt://');
+            } else if (url.startsWith('wss://')) {
+                elements.brokerUrl.value = url.replace('wss://', 'ws://');
+            }
+        }
+    });
+
+    // Auto-enable TLS toggle if user inputs a secure URL scheme
+    elements.brokerUrl.addEventListener('input', () => {
+        const url = elements.brokerUrl.value.trim();
+        const isSecure = url.startsWith('mqtts://') || 
+                         url.startsWith('wss://') || 
+                         url.startsWith('ssl://') || 
+                         url.startsWith('tls://');
+        if (isSecure && !elements.tlsEnabled.checked) {
+            elements.tlsEnabled.checked = true;
+            elements.tlsSection.style.display = 'block';
+        }
+    });
+
+    // Helper function to setup file browse/clear handlers
+    function setupFilePicker(btnBrowse, btnClear, inputField, labelName) {
+        btnBrowse.addEventListener('click', async () => {
+            const filePath = await window.api.dialog.openFile({
+                title: `Select ${labelName}`,
+                properties: ['openFile'],
+                filters: [
+                    { name: 'Certificates/Keys', extensions: ['pem', 'crt', 'key', 'cer', 'der', 'txt'] },
+                    { name: 'All Files', extensions: ['*'] }
+                ]
+            });
+            if (filePath) {
+                inputField.value = filePath;
+                btnClear.style.display = 'block';
+            }
+        });
+
+        btnClear.addEventListener('click', () => {
+            inputField.value = '';
+            btnClear.style.display = 'none';
+        });
+    }
+
+    setupFilePicker(elements.btnBrowseCa, elements.btnClearCa, elements.tlsCaPath, 'CA Certificate File');
+    setupFilePicker(elements.btnBrowseCert, elements.btnClearCert, elements.tlsCertPath, 'Client Certificate File');
+    setupFilePicker(elements.btnBrowseKey, elements.btnClearKey, elements.tlsKeyPath, 'Client Private Key File');
+
     elements.btnConnect.addEventListener('click', async () => {
         const config = {
             brokerUrl: elements.brokerUrl.value.trim(),
             username: elements.username.value.trim(),
             password: elements.password.value,
-            clientId: elements.clientId.value.trim()
+            clientId: elements.clientId.value.trim(),
+            tlsEnabled: elements.tlsEnabled.checked,
+            rejectUnauthorized: !elements.tlsIgnoreVerification.checked,
+            caPath: elements.tlsCaPath.value.trim(),
+            certPath: elements.tlsCertPath.value.trim(),
+            keyPath: elements.tlsKeyPath.value.trim()
         };
 
         if (!config.brokerUrl) {
@@ -780,6 +861,17 @@ async function loadInitialData() {
         elements.username.value = connConfig.username || '';
         elements.password.value = connConfig.password || '';
         elements.clientId.value = connConfig.clientId || '';
+        elements.tlsEnabled.checked = connConfig.tlsEnabled || false;
+        elements.tlsIgnoreVerification.checked = connConfig.rejectUnauthorized === false;
+        elements.tlsCaPath.value = connConfig.caPath || '';
+        elements.tlsCertPath.value = connConfig.certPath || '';
+        elements.tlsKeyPath.value = connConfig.keyPath || '';
+
+        // Update UI state based on loaded values
+        elements.tlsSection.style.display = connConfig.tlsEnabled ? 'block' : 'none';
+        elements.btnClearCa.style.display = connConfig.caPath ? 'block' : 'none';
+        elements.btnClearCert.style.display = connConfig.certPath ? 'block' : 'none';
+        elements.btnClearKey.style.display = connConfig.keyPath ? 'block' : 'none';
     }
 
     // Load bindings

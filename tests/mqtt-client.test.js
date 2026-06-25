@@ -15,7 +15,13 @@ jest.mock('mqtt', () => {
     };
 });
 
+// Mock the fs module
+jest.mock('fs', () => ({
+    readFileSync: jest.fn((path) => `content of ${path}`)
+}));
+
 const mqtt = require('mqtt');
+const fs = require('fs');
 const MqttClient = require('../electron/mqtt-client');
 
 describe('MqttClient', () => {
@@ -36,6 +42,70 @@ describe('MqttClient', () => {
             expect(client.connected).toBe(false);
             expect(client.subscriptions).toBeInstanceOf(Set);
             expect(client.subscriptions.size).toBe(0);
+        });
+    });
+
+    describe('connect', () => {
+        let mockClient;
+
+        beforeEach(() => {
+            mockClient = mqtt._mockClient;
+            // Setup mock implementation for client events
+            mockClient.on.mockImplementation((event, callback) => {
+                if (event === 'connect') {
+                    // simulate successful connection
+                    process.nextTick(callback);
+                }
+                return mockClient;
+            });
+        });
+
+        test('should connect with basic options', async () => {
+            const config = {
+                brokerUrl: 'mqtt://localhost:1883',
+                username: 'user',
+                password: 'pass',
+                clientId: 'my-client'
+            };
+
+            await client.connect(config);
+
+            expect(mqtt.connect).toHaveBeenCalledWith('mqtt://localhost:1883', expect.objectContaining({
+                username: 'user',
+                password: 'pass',
+                clientId: 'my-client'
+            }));
+        });
+
+        test('should auto-adjust broker URL protocol and apply TLS options when tlsEnabled is true', async () => {
+            const config = {
+                brokerUrl: 'mqtt://localhost:1883',
+                tlsEnabled: true,
+                rejectUnauthorized: false,
+                caPath: '/path/to/ca.crt',
+                certPath: '/path/to/client.crt',
+                keyPath: '/path/to/client.key'
+            };
+
+            await client.connect(config);
+
+            expect(mqtt.connect).toHaveBeenCalledWith('mqtts://localhost:1883', expect.objectContaining({
+                rejectUnauthorized: false,
+                ca: 'content of /path/to/ca.crt',
+                cert: 'content of /path/to/client.crt',
+                key: 'content of /path/to/client.key'
+            }));
+        });
+
+        test('should handle missing protocol by prepending mqtts:// when tlsEnabled is true', async () => {
+            const config = {
+                brokerUrl: 'localhost:8883',
+                tlsEnabled: true
+            };
+
+            await client.connect(config);
+
+            expect(mqtt.connect).toHaveBeenCalledWith('mqtts://localhost:8883', expect.any(Object));
         });
     });
 

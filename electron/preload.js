@@ -49,6 +49,11 @@ contextBridge.exposeInMainWorld('api', {
         saveSettings: (settings) => ipcRenderer.invoke('config:saveSettings', settings)
     },
 
+    // Dialogs
+    dialog: {
+        openFile: (options) => ipcRenderer.invoke('dialog:openFile', options)
+    },
+
     // Command Testing
     command: {
         test: (action) => ipcRenderer.invoke('command:test', action)
