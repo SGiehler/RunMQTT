@@ -20,7 +20,7 @@
     "desktop"
   ],
   "author": "",
-  "license": "CC-BY-NC-SA-4.0",
+  "license": "GPL-3.0-only",
   "build": {
     "appId": "com.runmqtt.app",
     "productName": "RunMQTT",
@@ -55,8 +55,7 @@
           ]
         }
       ],
-      "icon": "assets/icon.png",
-      "signAndEditExecutable": false
+      "icon": "assets/icon.png"
     },
     "nsis": {
       "oneClick": false,
